@@ -82,6 +82,13 @@ void CPU::set_flag(uint8_t reg, enum FlagBit flagBit, enum ConditionIns op, uint
               conditionBits |= 0x10;
             else
               conditionBits &= 0xEF;
+            break;
+        case SUB:
+            if(value < (number & 0x0F))
+                conditionBits |= 0x10;
+            else
+                conditionBits &= 0xEF;
+            break;
         default:
             break;
         }
@@ -111,15 +118,21 @@ void CPU::set_flag(uint8_t reg, enum FlagBit flagBit, enum ConditionIns op, uint
         case ADD:
         case ADC:
             sum = value + number;
+            if(sum > 0xFF)
+                conditionBits |= 0x01;
+            else
+                conditionBits &= 0xFE;
+            break;
+        case SUB:
+            sum = value - number;
+            if(value < number)
+                conditionBits |= 0x01;
+            else
+                conditionBits &= 0xFE;
             break;
         default:
             break;
         }
-
-        if(sum > 0xFF)
-            conditionBits |= 0x01;
-        else
-            conditionBits &= 0xFE;
     }
 }
 
@@ -963,68 +976,188 @@ void CPU::disassembler()
     }
     case 0x90:
         std::cout << "SUB B\n";
+        set_flag(REG_A, A, SUB, registers[REG_B]);
+        set_flag(REG_A, C, SUB, registers[REG_B]);
+        registers[REG_A] -= registers[REG_B];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0x91:
         std::cout << "SUB C\n";
+        set_flag(REG_A, A, SUB, registers[REG_C]);
+        set_flag(REG_A, C, SUB, registers[REG_C]);
+        registers[REG_A] -= registers[REG_C];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0x92:
         std::cout << "SUB D\n";
+        set_flag(REG_A, A, SUB, registers[REG_D]);
+        set_flag(REG_A, C, SUB, registers[REG_D]);
+        registers[REG_A] -= registers[REG_D];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0x93:
         std::cout << "SUB E\n";
+        set_flag(REG_A, A, SUB, registers[REG_E]);
+        set_flag(REG_A, C, SUB, registers[REG_E]);
+        registers[REG_A] -= registers[REG_E];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0x94:
         std::cout << "SUB H\n";
+        set_flag(REG_A, A, SUB, registers[REG_H]);
+        set_flag(REG_A, C, SUB, registers[REG_H]);
+        registers[REG_A] -= registers[REG_H];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0x95:
         std::cout << "SUB L\n";
+        set_flag(REG_A, A, SUB, registers[REG_L]);
+        set_flag(REG_A, C, SUB, registers[REG_L]);
+        registers[REG_A] -= registers[REG_L];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0x96:
         std::cout << "SUB M\n";
+        set_flag(REG_A, A, SUB, memory[(registers[REG_H] << 8) | registers[REG_L]]);
+        set_flag(REG_A, C, SUB, memory[(registers[REG_H] << 8) | registers[REG_L]]);
+        registers[REG_A] -= memory[(registers[REG_H] << 8) | registers[REG_L]];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0x97:
         std::cout << "SUB A\n";
+        set_flag(REG_A, A, SUB, registers[REG_A]);
+        set_flag(REG_A, C, SUB, registers[REG_A]);
+        registers[REG_A] -= registers[REG_A];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0x98:
-        std::cout << "SBB B\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "SBB B\n";
+            uint8_t carryValue = (conditionBits & 0x01);
+            set_flag(REG_A, A, SUB, (registers[REG_B] + carryValue));
+            set_flag(REG_A, C, SUB, (registers[REG_B] + carryValue));
+            registers[REG_A] -= (registers[REG_B] + carryValue);
+            set_flag(REG_A, S);
+            set_flag(REG_A, Z);
+            set_flag(REG_A, P);
+            pc += 1;
+            break;
+        }
     case 0x99:
-        std::cout << "SBB C\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "SBB C\n";
+            uint8_t carryValue = (conditionBits & 0x01);
+            set_flag(REG_A, A, SUB, (registers[REG_C] + carryValue));
+            set_flag(REG_A, C, SUB, (registers[REG_C] + carryValue));
+            registers[REG_A] -= (registers[REG_C] + carryValue);
+            set_flag(REG_A, S);
+            set_flag(REG_A, Z);
+            set_flag(REG_A, P);
+            pc += 1;
+            break;
+        }
     case 0x9A:
-        std::cout << "SBB D\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "SBB D\n";
+            uint8_t carryValue = (conditionBits & 0x01);
+            set_flag(REG_A, A, SUB, (registers[REG_D] + carryValue));
+            set_flag(REG_A, C, SUB, (registers[REG_D] + carryValue));
+            registers[REG_A] -= (registers[REG_D] + carryValue);
+            set_flag(REG_A, S);
+            set_flag(REG_A, Z);
+            set_flag(REG_A, P);
+            pc += 1;
+            break;
+        }
     case 0x9B:
-        std::cout << "SBB E\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "SBB E\n";
+            uint8_t carryValue = (conditionBits & 0x01);
+            set_flag(REG_A, A, SUB, (registers[REG_E] + carryValue));
+            set_flag(REG_A, C, SUB, (registers[REG_E] + carryValue));
+            registers[REG_A] -= (registers[REG_E] + carryValue);
+            set_flag(REG_A, S);
+            set_flag(REG_A, Z);
+            set_flag(REG_A, P);
+            pc += 1;
+            break;
+        }
     case 0x9C:
-        std::cout << "SBB H\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "SBB H\n";
+            uint8_t carryValue = (conditionBits & 0x01);
+            set_flag(REG_A, A, SUB, (registers[REG_H] + carryValue));
+            set_flag(REG_A, C, SUB, (registers[REG_H] + carryValue));
+            registers[REG_A] -= (registers[REG_H] + carryValue);
+            set_flag(REG_A, S);
+            set_flag(REG_A, Z);
+            set_flag(REG_A, P);
+            pc += 1;
+            break;
+        }
     case 0x9D:
-        std::cout << "SBB L\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "SBB L\n";
+            uint8_t carryValue = (conditionBits & 0x01);
+            set_flag(REG_A, A, SUB, (registers[REG_L] + carryValue));
+            set_flag(REG_A, C, SUB, (registers[REG_L] + carryValue));
+            registers[REG_A] -= (registers[REG_L] + carryValue);
+            set_flag(REG_A, S);
+            set_flag(REG_A, Z);
+            set_flag(REG_A, P);
+            pc += 1;
+            break;
+        }
     case 0x9E:
-        std::cout << "SBB M\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "SBB M\n";
+            uint8_t carryValue = (conditionBits & 0x01);
+            set_flag(REG_A, A, SUB, (memory[(registers[REG_H] << 8) | registers[REG_L]] + carryValue));
+            set_flag(REG_A, C, SUB, (memory[(registers[REG_H] << 8) | registers[REG_L]] + carryValue));
+            registers[REG_A] -= (memory[(registers[REG_H] << 8) | registers[REG_L]] + carryValue);
+            set_flag(REG_A, S);
+            set_flag(REG_A, Z);
+            set_flag(REG_A, P);
+            pc += 1;
+            break;
+        }
     case 0x9F:
-        std::cout << "SBB A\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "SBB A\n";
+            uint8_t carryValue = (conditionBits & 0x01);
+            set_flag(REG_A, A, SUB, (registers[REG_A] + carryValue));
+            set_flag(REG_A, C, SUB, (registers[REG_A] + carryValue));
+            registers[REG_A] -= (registers[REG_A] + carryValue);
+            set_flag(REG_A, S);
+            set_flag(REG_A, Z);
+            set_flag(REG_A, P);
+            pc += 1;
+            break;
+        }
     case 0xA0:
         std::cout << "ANA B\n";
         pc += 1;
