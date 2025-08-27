@@ -22,11 +22,11 @@
 
 enum FlagBit
 {
-    S,
-    Z,
-    A,
-    P,
-    C
+    S,  // sign bit
+    Z,  // zero bit
+    A,  // auxiliary carry bit
+    P,  // parity bit
+    C   // carry bit
 };
 
 // These are instructions that affect condition bits
@@ -39,6 +39,7 @@ enum ConditionIns
     ADD,
     ADC,
     SUB,
+    ANA
 };
 
 // Intel 8080

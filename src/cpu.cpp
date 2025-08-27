@@ -89,6 +89,11 @@ void CPU::set_flag(uint8_t reg, enum FlagBit flagBit, enum ConditionIns op, uint
             else
                 conditionBits &= 0xEF;
             break;
+        case ANA:
+            if((value & 0x08) && (number & 0x08))
+                conditionBits |= 0x10;
+            else
+                conditionBits &= 0xEF;
         default:
             break;
         }
@@ -1160,66 +1165,154 @@ void CPU::disassembler()
         }
     case 0xA0:
         std::cout << "ANA B\n";
+        conditionBits &= 0xFE;
+        set_flag(REG_A, A, ANA, registers[REG_B]);
+        registers[REG_A] &= registers[REG_B];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA1:
         std::cout << "ANA C\n";
+        conditionBits &= 0xFE;
+        set_flag(REG_A, A, ANA, registers[REG_C]);
+        registers[REG_A] &= registers[REG_C];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA2:
         std::cout << "ANA D\n";
+        conditionBits &= 0xFE;
+        set_flag(REG_A, A, ANA, registers[REG_D]);
+        registers[REG_A] &= registers[REG_D];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA3:
         std::cout << "ANA E\n";
+        conditionBits &= 0xFE;
+        set_flag(REG_A, A, ANA, registers[REG_E]);
+        registers[REG_A] &= registers[REG_E];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA4:
         std::cout << "ANA H\n";
+        conditionBits &= 0xFE;
+        set_flag(REG_A, A, ANA, registers[REG_H]);
+        registers[REG_A] &= registers[REG_H];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA5:
         std::cout << "ANA L\n";
+        conditionBits &= 0xFE;
+        set_flag(REG_A, A, ANA, registers[REG_L]);
+        registers[REG_A] &= registers[REG_L];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA6:
         std::cout << "ANA M\n";
+        conditionBits &= 0xFE;
+        set_flag(REG_A, A, ANA, (memory[(registers[REG_H] << 8) | registers[REG_L]]));
+        registers[REG_A] &= memory[(registers[REG_H] << 8) | registers[REG_L]];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA7:
         std::cout << "ANA A\n";
+        conditionBits &= 0xFE;
+        set_flag(REG_A, A, ANA, registers[REG_A]);
+        registers[REG_A] &= registers[REG_A];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA8:
         std::cout << "XRA B\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] ^= registers[REG_B];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xA9:
         std::cout << "XRA C\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] ^= registers[REG_C];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xAA:
         std::cout << "XRA D\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] ^= registers[REG_D];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xAB:
         std::cout << "XRA E\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] ^= registers[REG_E];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xAC:
         std::cout << "XRA H\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] ^= registers[REG_H];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xAD:
         std::cout << "XRA L\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] ^= registers[REG_L];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xAE:
         std::cout << "XRA M\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] ^= memory[(registers[REG_H] << 8) | registers[REG_L]];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xAF:
         std::cout << "XRA A\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] ^= registers[REG_A];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB0:
