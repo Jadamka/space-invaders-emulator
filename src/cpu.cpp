@@ -48,10 +48,14 @@ void CPU::set_flag(uint8_t reg, enum FlagBit flagBit, enum ConditionIns op, uint
 
     if(flagBit == S)
     {
+        if(op == CMP)
+            value -= number;
         conditionBits = (conditionBits & 0x7F) | (value & 0x80);
     }
     else if(flagBit ==  Z)
     {
+        if(op == CMP)
+            value -= number;
         if(value == 0x00)
             conditionBits |= 0x40;
         else
@@ -89,6 +93,19 @@ void CPU::set_flag(uint8_t reg, enum FlagBit flagBit, enum ConditionIns op, uint
             else
                 conditionBits &= 0xEF;
             break;
+        case CMP:
+            {
+                if(value < (number & 0x0F))
+                    conditionBits |= 0x10;
+                else
+                    conditionBits &= 0xEF;
+
+                uint8_t signA = (value & 0x80);
+                uint8_t signB = (value & 0x80);
+                if(signA != signB)
+                    conditionBits ^= 0x01;
+                break;
+            }
         case ANA:
             if((value & 0x08) && (number & 0x08))
                 conditionBits |= 0x10;
@@ -100,6 +117,9 @@ void CPU::set_flag(uint8_t reg, enum FlagBit flagBit, enum ConditionIns op, uint
     }
     else if(flagBit == P)
     {
+        if(op == CMP)
+            value -= number;
+
         uint8_t bitsCount = 0;
 
         while(value != 0x00)
@@ -129,6 +149,7 @@ void CPU::set_flag(uint8_t reg, enum FlagBit flagBit, enum ConditionIns op, uint
                 conditionBits &= 0xFE;
             break;
         case SUB:
+        case CMP:
             sum = value - number;
             if(value < number)
                 conditionBits |= 0x01;
@@ -1317,38 +1338,83 @@ void CPU::disassembler()
         break;
     case 0xB0:
         std::cout << "ORA B\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] |= registers[REG_B];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB1:
         std::cout << "ORA C\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] |= registers[REG_C];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB2:
         std::cout << "ORA D\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] |= registers[REG_D];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB3:
         std::cout << "ORA E\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] |= registers[REG_E];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB4:
         std::cout << "ORA H\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] |= registers[REG_H];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB5:
         std::cout << "ORA L\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] |= registers[REG_L];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB6:
         std::cout << "ORA M\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] |= memory[(registers[REG_H] << 8) | registers[REG_L]];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB7:
         std::cout << "ORA A\n";
+        conditionBits &= 0xEE;
+        registers[REG_A] |= registers[REG_A];
+        set_flag(REG_A, S);
+        set_flag(REG_A, Z);
+        set_flag(REG_A, P);
         pc += 1;
         break;
     case 0xB8:
         std::cout << "CMP B\n";
+        set_flag(REG_A, A, CMP, registers[REG_B]);
+        set_flag(REG_A, C, CMP, registers[REG_B]);
+        set_flag(REG_A, S, CMP, registers[REG_B]);
+        set_flag(REG_A, Z, CMP, registers[REG_B]);
+        set_flag(REG_A, P, CMP, registers[REG_B]);
         pc += 1;
         break;
     case 0xB9:

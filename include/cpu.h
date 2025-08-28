@@ -39,7 +39,8 @@ enum ConditionIns
     ADD,
     ADC,
     SUB,
-    ANA
+    ANA,
+    CMP
 };
 
 // Intel 8080
