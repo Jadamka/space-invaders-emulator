@@ -1419,30 +1419,65 @@ void CPU::disassembler()
         break;
     case 0xB9:
         std::cout << "CMP C\n";
+        set_flag(REG_A, A, CMP, registers[REG_C]);
+        set_flag(REG_A, C, CMP, registers[REG_C]);
+        set_flag(REG_A, S, CMP, registers[REG_C]);
+        set_flag(REG_A, Z, CMP, registers[REG_C]);
+        set_flag(REG_A, P, CMP, registers[REG_C]);
         pc += 1;
         break;
     case 0xBA:
         std::cout << "CMP D\n";
+        set_flag(REG_A, A, CMP, registers[REG_D]);
+        set_flag(REG_A, C, CMP, registers[REG_D]);
+        set_flag(REG_A, S, CMP, registers[REG_D]);
+        set_flag(REG_A, Z, CMP, registers[REG_D]);
+        set_flag(REG_A, P, CMP, registers[REG_D]);
         pc += 1;
         break;
     case 0xBB:
         std::cout << "CMP E\n";
+        set_flag(REG_A, A, CMP, registers[REG_E]);
+        set_flag(REG_A, C, CMP, registers[REG_E]);
+        set_flag(REG_A, S, CMP, registers[REG_E]);
+        set_flag(REG_A, Z, CMP, registers[REG_E]);
+        set_flag(REG_A, P, CMP, registers[REG_E]);
         pc += 1;
         break;
     case 0xBC:
         std::cout << "CMP H\n";
+        set_flag(REG_A, A, CMP, registers[REG_H]);
+        set_flag(REG_A, C, CMP, registers[REG_H]);
+        set_flag(REG_A, S, CMP, registers[REG_H]);
+        set_flag(REG_A, Z, CMP, registers[REG_H]);
+        set_flag(REG_A, P, CMP, registers[REG_H]);
         pc += 1;
         break;
     case 0xBD:
         std::cout << "CMP L\n";
+        set_flag(REG_A, A, CMP, registers[REG_L]);
+        set_flag(REG_A, C, CMP, registers[REG_L]);
+        set_flag(REG_A, S, CMP, registers[REG_L]);
+        set_flag(REG_A, Z, CMP, registers[REG_L]);
+        set_flag(REG_A, P, CMP, registers[REG_L]);
         pc += 1;
         break;
     case 0xBE:
         std::cout << "CMP M\n";
+        set_flag(REG_A, A, CMP, memory[(registers[REG_H] << 8) | registers[REG_L]]);
+        set_flag(REG_A, C, CMP, memory[(registers[REG_H] << 8) | registers[REG_L]]);
+        set_flag(REG_A, S, CMP, memory[(registers[REG_H] << 8) | registers[REG_L]]);
+        set_flag(REG_A, Z, CMP, memory[(registers[REG_H] << 8) | registers[REG_L]]);
+        set_flag(REG_A, P, CMP, memory[(registers[REG_H] << 8) | registers[REG_L]]);
         pc += 1;
         break;
     case 0xBF:
         std::cout << "CMP A\n";
+        set_flag(REG_A, A, CMP, registers[REG_A]);
+        set_flag(REG_A, C, CMP, registers[REG_A]);
+        set_flag(REG_A, S, CMP, registers[REG_A]);
+        set_flag(REG_A, Z, CMP, registers[REG_A]);
+        set_flag(REG_A, P, CMP, registers[REG_A]);
         pc += 1;
         break;
     case 0xC0:
