@@ -303,9 +303,14 @@ void CPU::disassembler()
         pc += 2;
         break;
     case 0x17:
-        std::cout << "RAL\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "RAL\n";
+            uint8_t highOrderBit = (registers[REG_A] >> 7) & 0x01;
+            registers[REG_A] = (registers[REG_A] << 1) | (conditionBits & 0x01);
+            conditionBits = (highOrderBit == 1) ? (conditionBits | 0x01) : (conditionBits & 0xFE);
+            pc += 1;
+            break;
+        }
     case 0x19:
         std::cout << "DAD D\n";
         pc += 1;
@@ -342,9 +347,14 @@ void CPU::disassembler()
         pc += 2;
         break;
     case 0x1F:
-        std::cout << "RAR\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "RAR\n";
+            uint8_t lowOrderBit = registers[REG_A] & 0x01;
+            registers[REG_A] = (registers[REG_A] >> 1) | (conditionBits << 7);
+            conditionBits = (lowOrderBit == 1) ? (conditionBits | 0x01) : (conditionBits & 0xFE);
+            pc += 1;
+            break;
+        }
     case 0x21:
         print_ins_hex("LXI H, #$", memory[pc+2], memory[pc+1], true);
         pc += 3;
