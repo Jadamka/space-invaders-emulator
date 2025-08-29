@@ -215,9 +215,14 @@ void CPU::disassembler()
         pc += 2;
         break;
     case 0x07:
-        std::cout << "RLC\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "RLC\n";
+            uint8_t highOrderBit = (registers[REG_A] >> 7) & 0x01;
+            conditionBits = (highOrderBit == 1) ? (conditionBits | 0x01) : (conditionBits & 0xFE);
+            registers[REG_A] = (registers[REG_A] << 1) | highOrderBit;
+            pc += 1;
+            break;
+        }
     case 0x09:
         std::cout << "DAD B\n";
         pc += 1;
@@ -254,9 +259,14 @@ void CPU::disassembler()
         pc += 2;
         break;
     case 0x0F:
-        std::cout << "RRC\n";
-        pc += 1;
-        break;
+        {
+            std::cout << "RRC\n";
+            uint8_t lowOrderBit = registers[REG_A] & 0x01;
+            conditionBits = (lowOrderBit == 1) ? (conditionBits | 0x01) : (conditionBits & 0xFE);
+            registers[REG_A] = (registers[REG_A] >> 1) | (lowOrderBit << 7);
+            pc += 1;
+            break;
+        }
     case 0x11:
         print_ins_hex("LXI D, #$", memory[pc+2], memory[pc+1], true);
         pc += 3;
